@@ -6,6 +6,15 @@
             "id": "2d4e0c2a-b372-406c-9432-ec591979bcbc",
             "actions": [
                 {
+                    "name": "ToggleControls",
+                    "type": "Button",
+                    "id": "9d318af8-9391-4c1f-a033-c0cd5a1e855d",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "Move",
                     "type": "Value",
                     "id": "d0b9e8b7-5b7c-4b3b-b687-a1890f4ddc78",
@@ -22,9 +31,40 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Rotate",
+                    "type": "Value",
+                    "id": "158ae92d-9f6a-48e9-8711-3aab411e2fc7",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
+                {
+                    "name": "",
+                    "id": "68e67f86-b386-42c2-9a5b-963162311993",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d2fd2a2e-8653-489e-bca1-ba93034a06a1",
+                    "path": "<Keyboard>/enter",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ToggleControls",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
                 {
                     "name": "WASD",
                     "id": "6d56586c-421f-4a72-b636-c834e1f17275",
@@ -82,12 +122,12 @@
                 },
                 {
                     "name": "",
-                    "id": "68e67f86-b386-42c2-9a5b-963162311993",
-                    "path": "<Keyboard>/space",
+                    "id": "fcd93038-6ccc-4fe3-8907-4cc7d7fad856",
+                    "path": "<Mouse>/delta",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Jump",
+                    "action": "Rotate",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

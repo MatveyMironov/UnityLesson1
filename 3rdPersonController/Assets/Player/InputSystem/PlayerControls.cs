@@ -28,6 +28,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             ""id"": ""2d4e0c2a-b372-406c-9432-ec591979bcbc"",
             ""actions"": [
                 {
+                    ""name"": ""ToggleControls"",
+                    ""type"": ""Button"",
+                    ""id"": ""9d318af8-9391-4c1f-a033-c0cd5a1e855d"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""Move"",
                     ""type"": ""Value"",
                     ""id"": ""d0b9e8b7-5b7c-4b3b-b687-a1890f4ddc78"",
@@ -44,9 +53,40 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Rotate"",
+                    ""type"": ""Value"",
+                    ""id"": ""158ae92d-9f6a-48e9-8711-3aab411e2fc7"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""68e67f86-b386-42c2-9a5b-963162311993"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d2fd2a2e-8653-489e-bca1-ba93034a06a1"",
+                    ""path"": ""<Keyboard>/enter"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ToggleControls"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
                 {
                     ""name"": ""WASD"",
                     ""id"": ""6d56586c-421f-4a72-b636-c834e1f17275"",
@@ -104,12 +144,12 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""68e67f86-b386-42c2-9a5b-963162311993"",
-                    ""path"": ""<Keyboard>/space"",
+                    ""id"": ""fcd93038-6ccc-4fe3-8907-4cc7d7fad856"",
+                    ""path"": ""<Mouse>/delta"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Jump"",
+                    ""action"": ""Rotate"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -120,8 +160,10 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
 }");
         // MainActionMap
         m_MainActionMap = asset.FindActionMap("MainActionMap", throwIfNotFound: true);
+        m_MainActionMap_ToggleControls = m_MainActionMap.FindAction("ToggleControls", throwIfNotFound: true);
         m_MainActionMap_Move = m_MainActionMap.FindAction("Move", throwIfNotFound: true);
         m_MainActionMap_Jump = m_MainActionMap.FindAction("Jump", throwIfNotFound: true);
+        m_MainActionMap_Rotate = m_MainActionMap.FindAction("Rotate", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -183,14 +225,18 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     // MainActionMap
     private readonly InputActionMap m_MainActionMap;
     private List<IMainActionMapActions> m_MainActionMapActionsCallbackInterfaces = new List<IMainActionMapActions>();
+    private readonly InputAction m_MainActionMap_ToggleControls;
     private readonly InputAction m_MainActionMap_Move;
     private readonly InputAction m_MainActionMap_Jump;
+    private readonly InputAction m_MainActionMap_Rotate;
     public struct MainActionMapActions
     {
         private @PlayerControls m_Wrapper;
         public MainActionMapActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @ToggleControls => m_Wrapper.m_MainActionMap_ToggleControls;
         public InputAction @Move => m_Wrapper.m_MainActionMap_Move;
         public InputAction @Jump => m_Wrapper.m_MainActionMap_Jump;
+        public InputAction @Rotate => m_Wrapper.m_MainActionMap_Rotate;
         public InputActionMap Get() { return m_Wrapper.m_MainActionMap; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -200,22 +246,34 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         {
             if (instance == null || m_Wrapper.m_MainActionMapActionsCallbackInterfaces.Contains(instance)) return;
             m_Wrapper.m_MainActionMapActionsCallbackInterfaces.Add(instance);
+            @ToggleControls.started += instance.OnToggleControls;
+            @ToggleControls.performed += instance.OnToggleControls;
+            @ToggleControls.canceled += instance.OnToggleControls;
             @Move.started += instance.OnMove;
             @Move.performed += instance.OnMove;
             @Move.canceled += instance.OnMove;
             @Jump.started += instance.OnJump;
             @Jump.performed += instance.OnJump;
             @Jump.canceled += instance.OnJump;
+            @Rotate.started += instance.OnRotate;
+            @Rotate.performed += instance.OnRotate;
+            @Rotate.canceled += instance.OnRotate;
         }
 
         private void UnregisterCallbacks(IMainActionMapActions instance)
         {
+            @ToggleControls.started -= instance.OnToggleControls;
+            @ToggleControls.performed -= instance.OnToggleControls;
+            @ToggleControls.canceled -= instance.OnToggleControls;
             @Move.started -= instance.OnMove;
             @Move.performed -= instance.OnMove;
             @Move.canceled -= instance.OnMove;
             @Jump.started -= instance.OnJump;
             @Jump.performed -= instance.OnJump;
             @Jump.canceled -= instance.OnJump;
+            @Rotate.started -= instance.OnRotate;
+            @Rotate.performed -= instance.OnRotate;
+            @Rotate.canceled -= instance.OnRotate;
         }
 
         public void RemoveCallbacks(IMainActionMapActions instance)
@@ -235,7 +293,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     public MainActionMapActions @MainActionMap => new MainActionMapActions(this);
     public interface IMainActionMapActions
     {
+        void OnToggleControls(InputAction.CallbackContext context);
         void OnMove(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
+        void OnRotate(InputAction.CallbackContext context);
     }
 }

@@ -11,14 +11,24 @@ public class Invoker
         _playerMovement = new PlayerMovement();
     }
 
-    public void InvokeMove(Vector2 direction)
+    public void InvokeMove(Vector2 horizontalDirection)
     {
-        Vector3 speed = new Vector3(direction.x, 0f, direction.y) * _player.MovementSpeed;
-        _playerMovement.Move(_player.Rigidbody, speed);
+        if (_player.IsGrounded)
+        {
+            _playerMovement.Move(_player.Rigidbody, horizontalDirection, _player.MovementSpeed);
+        }
     }
 
     public void InvokeJump()
     {
-        _playerMovement.Jump(_player.Rigidbody, _player.JumpForce);
+        if (_player.IsGrounded)
+        {
+            _playerMovement.Jump(_player.Rigidbody, _player.JumpForce);
+        }
+    }
+
+    public void InvokeRotate(float rotationAmount)
+    {
+        _playerMovement.Rotate(_player.Rigidbody, rotationAmount * _player.RotationSensetivity);
     }
 }

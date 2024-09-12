@@ -2,14 +2,18 @@ using UnityEngine;
 
 public class PlayerMovement
 {
-    public void Move(Rigidbody rigidbody, Vector3 speed)
+    public void Move(Rigidbody rigidbody, Vector2 horizontalDirection, float movementSpeed)
     {
-        rigidbody.velocity = speed;
+        Vector3 movement = rigidbody.rotation * new Vector3(horizontalDirection.x, 0, horizontalDirection.y);
+        if(rigidbody.velocity.magnitude < movementSpeed)
+        {
+            rigidbody.velocity += movement;
+        }
     }
 
-    public void Rotate(Rigidbody rigidbody)
+    public void Rotate(Rigidbody rigidbody, float rotationAmount)
     {
-
+        rigidbody.transform.Rotate(Vector3.up, rotationAmount);
     }
 
     public void Jump(Rigidbody rigidbody, float jumpForce)
